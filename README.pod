@@ -1,0 +1,60 @@
+=pod
+
+=encoding UTF-8
+
+=head1 ABOUT
+
+TBC
+
+=head1 VERSION
+
+Let it be v0.0.1
+
+=head1 SYNOPSIS
+
+    # Recreate the db, load data and run:
+    .\app.pl recreate
+    .\app.pl load
+    .\app.pl
+
+=head1 DESCRIPTION
+
+Detailed, in-depth description of this project.
+
+=head2 Introduction
+
+What is the idea behind this project, what it struggles to achieve
+
+=head2 Documentation
+
+=head3 Building from source
+
+Some links, descriptions or commands...
+
+=head3 User guide
+
+Links to more documentation pages.
+
+
+=head1 USED LIBRARIES AND DEPENDENCIES
+
+List of used libraries and dependencies, like...
+
+=head1 SEE ALSO
+
+Some related information.
+
+=head1 AUTHORS
+
+Vasyl, basilwashere[at]gmail.com, year-year
+
+=head1 CONTRIBUTING
+
+How to contribute to this project?
+
+=head1 COPYRIGHT AND LICENSE
+
+This project is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

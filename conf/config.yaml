@@ -1,0 +1,19 @@
+# Global Dancer2 settings
+appname: "A book catalogue"
+charset: "UTF-8"
+# Logging:
+log: 'debug'
+startup_info: 1
+show_errors:  1
+template: Xslate
+plugins:
+  DBIC:
+    default:
+      dsn: dbi:SQLite:dbname=db/local.db
+      user: user
+      password: password
+      schema_class: MySchema
+      options:
+        RaiseError: 1
+        PrintError: 1
+        sqlite_unicode: 1

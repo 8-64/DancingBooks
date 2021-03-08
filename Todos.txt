@@ -1,0 +1,7 @@
+- Data validation
+- Templates
+- Web part
+- Launch through plackup
+- Documentation
+- Tests
+- Dockerfile/CI/CD
