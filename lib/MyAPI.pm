@@ -175,7 +175,7 @@ package MyAPI v0.0.1 {
                 my $book_rs = $schema->resultset('Book');
                 my $book_authors_rs = $schema->resultset('BookAuthors');
                 foreach (@$books) {
-                    $book_rs->create($_);
+                    $book_rs->find_or_create($_);
                     $book_authors_rs->create({
                         book_id   => $_->{id},
                         author_id => $id,
