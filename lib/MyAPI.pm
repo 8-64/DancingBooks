@@ -66,6 +66,67 @@ package MyAPI v0.0.1 {
             return to_json({ $id => 'OK deleted' });
         };
 
+        put '/books/:id' => sub ($dancer) {
+            my $id = int route_parameters->get('id');
+            my $post = from_json(request->body);
+            $post->{id} = $id; # Prefer id from the request path
+            # TODO: Validation/hydration/grooming of incoming data
+
+            my $schema = schema;
+
+            my $book = $schema->resultset('Book')->search( {id => $id} )->first;
+            send_error("There is already a book with id [$id].", 409) if (defined $book);
+
+            my $authors = delete $post->{author};
+            if (defined $authors) {
+                my $authors_rs = $schema->resultset('Author');
+                my $book_authors_rs = $schema->resultset('BookAuthors');
+                foreach (@$authors) {
+                    $authors_rs->find_or_create($_);
+                    $book_authors_rs->create({
+                        book_id   => $_->{id},
+                        author_id => $id,
+                    });
+                }
+            }
+
+            $book = $schema->resultset('Book');
+            $book->create($post);
+
+            status 201;
+            return to_json({ $id => 'OK created' });
+        };
+
+        patch '/books/:id' => sub ($dancer) {
+            my $id = int route_parameters->get('id');
+            my $post = from_json(request->body);
+
+            # TODO: Validation/hydration/grooming of incoming data
+            my $new_id = int $post->{id};
+
+            my $schema = schema;
+
+            my $book_rs = $schema->resultset('Book')->search( {id => $id} )->first;
+            send_error("There is no book with id [$id].", 404) unless (defined $book_rs);
+
+            my %book = $book_rs->get_columns;
+            my @diff;
+            foreach my $k (keys %book) {
+                next unless (exists $post->{$k});
+                next if ($post->{$k} eq $book{$k});
+                push (@diff, $k, $post->{$k});
+            }
+
+            return to_json({ $id => 'Nothing to patch' }) unless (@diff);
+
+            # TODO: Update book's id elsewhere
+            my $target_book_rs = $schema->resultset('Book')->search( {id => $new_id} )->first;
+            send_error("There is already a book with id [$new_id].", 409) if (defined $target_book_rs);
+            $book_rs->update({ @diff });
+
+            return to_json({ $id => 'OK patched' });
+        };
+
         get '/authors/:id' => sub ($dancer) {
             my $id = int route_parameters->get('id');
 
@@ -101,6 +162,7 @@ package MyAPI v0.0.1 {
         put '/authors/:id' => sub ($dancer) {
             my $id = int route_parameters->get('id');
             my $post = from_json(request->body);
+            $post->{id} = $id; # Prefer id from the request path
             # TODO: Validation/hydration/grooming of incoming data
 
             my $schema = schema;
@@ -108,11 +170,54 @@ package MyAPI v0.0.1 {
             my $author = $schema->resultset('Author')->search( {id => $id} )->first;
             send_error("There is already an author with id [$id].", 409) if (defined $author);
 
+            my $books = delete $post->{book};
+            if (defined $books) {
+                my $book_rs = $schema->resultset('Book');
+                my $book_authors_rs = $schema->resultset('BookAuthors');
+                foreach (@$books) {
+                    $book_rs->create($_);
+                    $book_authors_rs->create({
+                        book_id   => $_->{id},
+                        author_id => $id,
+                    });
+                }
+            }
+
             $author = $schema->resultset('Author');
             $author->create($post);
 
             status 201;
             return to_json({ $id => 'OK created' });
+        };
+
+        patch '/authors/:id' => sub ($dancer) {
+            my $id = int route_parameters->get('id');
+            my $post = from_json(request->body);
+
+            # TODO: Validation/hydration/grooming of incoming data
+            my $new_id = int $post->{id};
+
+            my $schema = schema;
+
+            my $author_rs = $schema->resultset('Author')->search( {id => $id} )->first;
+            send_error("There is no author with id [$id].", 404) unless (defined $author_rs);
+
+            my %author = $author_rs->get_columns;
+            my @diff;
+            foreach my $k (keys %author) {
+                next unless (exists $post->{$k});
+                next if ($post->{$k} eq $author{$k});
+                push (@diff, $k, $post->{$k});
+            }
+
+            return to_json({ $id => 'Nothing to patch' }) unless (@diff);
+
+            # TODO: Update author's id elsewhere
+            my $target_author_rs = $schema->resultset('Author')->search( {id => $new_id} )->first;
+            send_error("There is already an author with id [$new_id].", 409) if (defined $target_author_rs);
+            $author_rs->update({ @diff });
+
+            return to_json({ $id => 'OK patched' });
         };
     };
 
