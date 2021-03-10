@@ -1,0 +1,27 @@
+: include "lib/views/templates/head.tx";
+
+: include "lib/views/templates/listing_style.tx";
+
+<div class="big_block">
+<h1><: $author.name :> <: $author.surname :></h1>
+
+<div class="date_details">
+<small>Country: <: $author.country | mark_raw :></small>
+</div>
+
+<div class="book_author">
+<table>
+<th colspan="2">Books authored:</th>
+: for $author.book -> $book {
+<tr>
+    <td>
+    <a href="../books/<: $book.id :>"><h3><: $book.title :></h3></a>
+    <small class="date_details">(<: $book.date_published :>)</small>
+    </td>
+</tr>
+: } # for
+</table>
+</div>
+</div>
+
+: include "lib/views/templates/footer.tx";

@@ -1,0 +1,28 @@
+: include "lib/views/templates/head.tx";
+
+: include "lib/views/templates/listing_style.tx";
+
+<div class="big_block">
+<h1><: $book.title :></h1>
+:   if $book.isbn {
+    <code>ISBN: <: $book.isbn :></code>
+:   }
+<div class="date_details">
+<small>Publishing date: <: $book.date_published :></small>
+</div>
+
+<div class="book_author">
+<table>
+<th colspan="2">By:</th>
+: for $book.author -> $author {
+<tr>
+    <td>
+    <a href="../authors/<: $author.id :>"><h3><: $author.name :> <: $author.surname :></h3></a>
+    </td>
+</tr>
+: } # for
+</table>
+</div>
+</div>
+
+: include "lib/views/templates/footer.tx";

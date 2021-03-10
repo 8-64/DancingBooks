@@ -39,7 +39,6 @@ package MyModel v0.0.1 {
         %modifiers = map { $_, 1 } %modifiers;
         my $sanitized = {};
         while (my ($attribute, $processing) = each $attributes{$what}->%*) {
-            say $attribute;
             given ($processing->[0]) {
                 when ('passthrough') {
                     next unless exists $data->{$attribute};

@@ -1,0 +1,25 @@
+: include "lib/views/templates/head.tx";
+
+<style type="text/css">
+.container {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 25% 50% auto;
+    grid-template-rows: 25% 25% 25% auto;
+    grid-template-areas:
+        ". . ."
+        ". authors ."
+        ". books ."
+        ". . .";
+}
+.grid_item {
+    justify-self: center;
+}
+</style>
+
+<div class="container full_box">
+    <div style="grid-area: authors" class="grid_item"><a href="authors"><h1>Authors</h1></a></div>
+    <div style="grid-area: books" class="grid_item"><a href="books"><h1>Books</h1></a></div>
+</div>
+
+: include "lib/views/templates/footer.tx";

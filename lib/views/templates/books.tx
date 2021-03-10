@@ -1,0 +1,22 @@
+: include "lib/views/templates/head.tx";
+
+: include "lib/views/templates/listing_style.tx";
+
+<table>
+: for $books -> $book {
+<tr>
+    <td>&nbsp;</td>
+    <td>
+    <a href="books/<: $book.id :>"><h3><: $book.title :></h3></a>
+:   if $book.isbn {
+        <code>ISBN: <: $book.isbn :></code>
+:   }
+    <div class="date_details">
+    <small><: $book.date_published :></small>
+    </div>
+    </td>
+</tr>
+: } # for
+</table>
+
+: include "lib/views/templates/footer.tx";

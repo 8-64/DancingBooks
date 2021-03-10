@@ -1,0 +1,16 @@
+: include "lib/views/templates/head.tx";
+
+: include "lib/views/templates/listing_style.tx";
+
+<table>
+: for $authors -> $author {
+<tr>
+    <td><: $author.country | mark_raw :></td>
+    <td>
+    <a href="authors/<: $author.id :>"><h3><: $author.name :> <: $author.surname :> </h3></a>
+    </td>
+</tr>
+: } # for
+</table>
+
+: include "lib/views/templates/footer.tx";

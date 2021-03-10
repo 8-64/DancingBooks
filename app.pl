@@ -29,6 +29,7 @@ use Plack::Builder;
 use Dancer2::Plugin::DBIC;
 
 use MyAPI;
+use MyWWW;
 use MySchema;
 
 # Some command-line options processing
@@ -87,6 +88,7 @@ sub toDate ($arg) { ParseDate($arg) }
 
 builder {
     mount '/api' => MyAPI->to_app;
+    mount '/'    => MyWWW->to_app;
 };
 
 # Some shortcuts to help with development

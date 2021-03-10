@@ -104,6 +104,7 @@ package MyAPI v0.0.1 {
             my $id = int route_parameters->get('id');
             my $post = from_json(request->body);
 
+            # TODO: improve check
             MyModel::As('book', $post, -check);
             my $new_id = int $post->{id};
 
@@ -197,6 +198,7 @@ package MyAPI v0.0.1 {
             my $id = int route_parameters->get('id');
             my $post = from_json(request->body);
 
+            # TODO: improve check
             MyModel::As('author', $post, -check);
             my $new_id = int $post->{id};
 

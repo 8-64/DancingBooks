@@ -1,0 +1,21 @@
+<style type="text/css">
+table, th, td, tr {
+    border: 0px;
+}
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0;
+}
+.date_details {
+    font-style: italic;
+    color: gray;
+}
+.book_author {
+    display: inline-block;
+    position: relative;
+    left: 10%;
+}
+.big_block {
+    position: relative;
+    left: 5%;
+}
+</style>
