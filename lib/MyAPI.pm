@@ -9,6 +9,8 @@ package MyAPI v0.0.1 {
 
     use Data::Dumper 'Dumper';
 
+    use MyModel;
+
     prefix '/api' => sub {
         set content_type => 'application/json';
 
@@ -70,7 +72,8 @@ package MyAPI v0.0.1 {
             my $id = int route_parameters->get('id');
             my $post = from_json(request->body);
             $post->{id} = $id; # Prefer id from the request path
-            # TODO: Validation/hydration/grooming of incoming data
+
+            $post = MyModel::As('book', $post);
 
             my $schema = schema;
 
@@ -101,7 +104,7 @@ package MyAPI v0.0.1 {
             my $id = int route_parameters->get('id');
             my $post = from_json(request->body);
 
-            # TODO: Validation/hydration/grooming of incoming data
+            MyModel::As('book', $post, -check);
             my $new_id = int $post->{id};
 
             my $schema = schema;
@@ -163,7 +166,7 @@ package MyAPI v0.0.1 {
             my $id = int route_parameters->get('id');
             my $post = from_json(request->body);
             $post->{id} = $id; # Prefer id from the request path
-            # TODO: Validation/hydration/grooming of incoming data
+            $post = MyModel::As('author', $post);
 
             my $schema = schema;
 
@@ -194,7 +197,7 @@ package MyAPI v0.0.1 {
             my $id = int route_parameters->get('id');
             my $post = from_json(request->body);
 
-            # TODO: Validation/hydration/grooming of incoming data
+            MyModel::As('author', $post, -check);
             my $new_id = int $post->{id};
 
             my $schema = schema;
