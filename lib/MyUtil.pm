@@ -4,6 +4,8 @@ package MyUtil v0.0.1 {
     use warnings; no warnings 'experimental';
     use utf8;
 
+    use Data::Dumper 'Dumper';
+
     state $flag_offset  = 0x1F1E6;
     state $ascii_offset = 0x41;
     sub CountryToEmoji ($country) {
@@ -14,6 +16,12 @@ package MyUtil v0.0.1 {
         $second = ord($second) - $ascii_offset + $flag_offset;
 
         sprintf('&#x%0x;&#x%0x;', $first, $second); # HTML output
+    }
+
+    sub DumpToPreformatted ($what) {
+        "<pre>\n"
+        . Dumper($what) .
+        '</pre>'
     }
 
     1;

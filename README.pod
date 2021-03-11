@@ -16,6 +16,10 @@ Let it be v0.0.1
     .\app.pl recreate
     .\app.pl load
     .\app.pl
+    # Or all at once
+    perl .\app.pl recreate --yes load run
+    # Or, with Dancer
+    perl .\app.pl recreate --yes load dance
 
 =head1 DESCRIPTION
 
@@ -27,9 +31,11 @@ What is the idea behind this project, what it struggles to achieve
 
 =head2 Documentation
 
-=head3 Building from source
+=head3 Building with Docker
 
-Some links, descriptions or commands...
+Using Docker to build and customize image containing this application:
+
+    docker image build -t perl_dancer2_sample_service .
 
 =head3 User guide
 
