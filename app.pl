@@ -28,8 +28,8 @@ my %argh;
 BEGIN {
     %argh = map { s/^-+//; lc $_, 1 } @ARGV;
     # Global run mode
-    ${^RM} = 'Test'; # Test otherwise
-    ${^RM} = 'Plack'  if (scalar(() = caller) == 3); # Plack by default. 1 level (and 3 items in array) of calling is caused by BEGIN block
+    ${^RM} = 'Plack'; # Plack by default
+    ${^RM} = 'Test'   if (scalar caller(1)); # 0-th level of the stack trace is caused by BEGIN block, but if there is more, then application is run by something else from the outside
     ${^RM} = 'Dancer' if (delete $argh{dance}); # Can be Dancer2
 }
 

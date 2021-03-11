@@ -15,6 +15,7 @@ use lib "$root_dir/lib";
 use Test::More;
 use Test::Pod;
 
+# All module names from the root of lib dir
 my @modules = sort map { s/\.pm\Z//; substr($_, rindex($_, '/') + 1) } glob("$root_dir/lib/*.pm");
 
 plan tests => scalar(@modules) * 4;
