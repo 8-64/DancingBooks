@@ -4,11 +4,11 @@
 
 =head1 ABOUT
 
-TBC
+Sample book catalogue service written using L<Dancer2>, L<DBIx::Class>, and L<Plack/PSGI|https://plackperl.org/>
 
 =head1 VERSION
 
-Let it be v0.0.1
+v0.0.1
 
 =head1 SYNOPSIS
 
@@ -23,32 +23,79 @@ Let it be v0.0.1
 
 =head1 DESCRIPTION
 
-Detailed, in-depth description of this project.
-
-=head2 Introduction
-
-What is the idea behind this project, what it struggles to achieve
-
-=head2 Documentation
-
 =head3 Building with Docker
 
 Using Docker to build and customize image containing this application:
 
     docker image build -t perl_dancer2_sample_service .
 
-=head3 User guide
-
-Links to more documentation pages.
-
-
 =head1 USED LIBRARIES AND DEPENDENCIES
 
-List of used libraries and dependencies, like...
+=begin html
+
+<table>
+
+<tr>
+<th>What is used</th>
+<th>Version</th>
+</tr>
+
+<tr>
+<td>Perl</td>
+<td>5.30</td>
+</tr>
+
+<tr>
+<td>Dancer2</td>
+<td>0.300005</td>
+</tr>
+
+<tr>
+<td>Dancer2::Plugin::DBIC</td>
+<td>0.0100</td>
+</tr>
+
+<tr>
+<td>DBIx::Class</td>
+<td>0.082841</td>
+</tr>
+
+<tr>
+<td>Dancer2::Template::Xslate</td>
+<td>v0.1.2</td>
+</tr>
+
+<tr>
+<td>Text::Xslate</td>
+<td>v3.5.7</td>
+</tr>
+
+<tr>
+<td>Plack</td>
+<td>1.0047</td>
+</tr>
+
+</table>
+
+=end html
 
 =head1 SEE ALSO
 
-Some related information.
+=over 4
+
+=item * Dancer2 L<Dancer2>
+
+=item * DBIx::Class L<DBIx::Class>
+
+=item * Plack/PSGI L<https://plackperl.org/>
+
+=item * Mojolicious L<Mojolicious>
+
+=item * Text::Xslate L<Text::Xslate>
+
+=item * Gazelle L<Gazelle>
+
+=back
 
 =head1 AUTHORS
 
@@ -56,7 +103,7 @@ Vasyl, basilwashere[at]gmail.com, year-year
 
 =head1 CONTRIBUTING
 
-How to contribute to this project?
+Feel free to ❤🐪
 
 =head1 COPYRIGHT AND LICENSE
 
