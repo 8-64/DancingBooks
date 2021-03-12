@@ -29,7 +29,7 @@ BEGIN {
     %argh = map { s/^-+//; lc $_, 1 } @ARGV;
     # Global run mode
     ${^RM} = 'Plack'; # Plack by default
-    ${^RM} = 'Test'   if (scalar caller(1)); # 0-th level of the stack trace is caused by BEGIN block, but if there is more, then application is run by something else from the outside
+    ${^RM} = 'Test'   if (scalar caller(2)); # 0-th level of the stack trace is caused by BEGIN block, but if there is more, then application is run by something else from the outside
     ${^RM} = 'Dancer' if (delete $argh{dance}); # Can be Dancer2
 }
 

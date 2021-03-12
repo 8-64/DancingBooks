@@ -35,8 +35,8 @@ package MyModel v0.0.1 {
         },
     );
 
-    sub As ($what, $data, %modifiers) {
-        %modifiers = map { $_, 1 } %modifiers;
+    sub As ($what, $data, @modifiers) {
+        my %modifiers = map { $_, 1 } @modifiers;
         my $sanitized = {};
         while (my ($attribute, $processing) = each $attributes{$what}->%*) {
             given ($processing->[0]) {

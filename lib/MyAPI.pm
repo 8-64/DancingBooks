@@ -122,8 +122,10 @@ package MyAPI v0.0.2 {
         return to_json({ $id => 'Nothing to patch' }) unless (@diff);
 
         # TODO: Update book's id elsewhere
-        my $target_book_rs = $schema->resultset('Book')->search( {id => $new_id} )->first;
-        send_error("There is already a book with id [$new_id].", 409) if (defined $target_book_rs);
+        if ($new_id != $id) {
+            my $target_book_rs = $schema->resultset('Book')->search( {id => $new_id} )->first;
+            send_error("There is already a book with id [$new_id].", 409) if (defined $target_book_rs);
+        }
         $book_rs->update({ @diff });
 
         return to_json({ $id => 'OK patched' });
@@ -216,8 +218,10 @@ package MyAPI v0.0.2 {
         return to_json({ $id => 'Nothing to patch' }) unless (@diff);
 
         # TODO: Update author's id elsewhere
-        my $target_author_rs = $schema->resultset('Author')->search( {id => $new_id} )->first;
-        send_error("There is already an author with id [$new_id].", 409) if (defined $target_author_rs);
+        if ($new_id != $id) {
+            my $target_author_rs = $schema->resultset('Author')->search( {id => $new_id} )->first;
+            send_error("There is already an author with id [$new_id].", 409) if (defined $target_author_rs);
+        }
         $author_rs->update({ @diff });
 
         return to_json({ $id => 'OK patched' });
