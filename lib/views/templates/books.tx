@@ -2,7 +2,7 @@
 
 : include "lib/views/templates/listing_style.tx";
 
-<table>
+<table class="big_block">
 : for $books -> $book {
 <tr>
     <td>&nbsp;</td>

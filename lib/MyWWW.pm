@@ -13,7 +13,7 @@ package MyWWW v0.0.1 {
         template "templates/index.tx", { title => 'Book catalogue title page' };
     };
 
-    get '/books' => sub ($dancer) {
+    get '/books/?' => sub ($dancer) {
         my $schema = schema;
 
         my $result = [];
@@ -44,7 +44,7 @@ package MyWWW v0.0.1 {
         template "templates/book.tx", { title => 'Book information', book => $result };
     };
 
-    get '/authors' => sub ($dancer) {
+    get '/authors/?' => sub ($dancer) {
         my $schema = schema;
 
         my $result = [];

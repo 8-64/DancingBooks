@@ -12,7 +12,7 @@ package MyAPI v0.0.2 {
     prefix '/api' if (${^RM} eq 'Dancer'); # it behaves differently in different run modes
     set content_type => 'application/json';
 
-    any ['get', 'post'] => '/books' => sub ($dancer) {
+    any ['get', 'post'] => '/books/?' => sub ($dancer) {
         my $schema = schema;
 
         my $result = [];
@@ -23,7 +23,7 @@ package MyAPI v0.0.2 {
         return to_json( $result );
     };
 
-    any ['get', 'post'] => '/authors' => sub ($dancer) {
+    any ['get', 'post'] => '/authors/?' => sub ($dancer) {
         my $schema = schema;
 
         my $result = [];
@@ -82,11 +82,12 @@ package MyAPI v0.0.2 {
         if (defined $authors) {
             my $authors_rs = $schema->resultset('Author');
             my $book_authors_rs = $schema->resultset('BookAuthors');
-            foreach (@$authors) {
-                $authors_rs->find_or_create($_);
+            foreach my $author (@$authors) {
+                $author = MyModel::As('author', $author);
+                $authors_rs->find_or_create($author);
                 $book_authors_rs->create({
-                    book_id   => $_->{id},
-                    author_id => $id,
+                    book_id   => $id,
+                    author_id => $author->{id},
                 });
             }
         }
@@ -178,10 +179,11 @@ package MyAPI v0.0.2 {
         if (defined $books) {
             my $book_rs = $schema->resultset('Book');
             my $book_authors_rs = $schema->resultset('BookAuthors');
-            foreach (@$books) {
-                $book_rs->find_or_create($_);
+            foreach my $book (@$books) {
+                $book = MyModel::As('book', $book);
+                $book_rs->find_or_create($book);
                 $book_authors_rs->create({
-                    book_id   => $_->{id},
+                    book_id   => $book->{id},
                     author_id => $id,
                 });
             }
