@@ -130,6 +130,11 @@ foreach my $catalogue_endpoint ('api/books', 'api/authors') {
     ok($data->{$field} eq $reversed, "Item [$item_path] has [$field] reversed and stored");
 }
 
+END {
+    # Perform cleanup at the end
+    
+}
+
 done_testing();
 
 sub GiveMe ($what, $randid) {

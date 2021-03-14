@@ -5,10 +5,6 @@ use feature ':all';
 use warnings;
 use utf8;
 
-use Data::Dumper 'Dumper';
-use Date::Manip 'ParseDate';
-use Text::CSV;
-
 # Paths, libs and configs
 # "DANCER_*" env variables should be set before using Dancer2
 use FindBin '$RealBin';
@@ -30,7 +26,7 @@ BEGIN {
     # Global run mode
     ${^RM} = 'Plack'; # Plack by default
     ${^RM} = 'Test'   if (scalar caller(2)); # 0-th level of the stack trace is caused by BEGIN block, but if there is more, then application is run by something else from the outside
-    ${^RM} = 'Dancer' if (delete $argh{dance}); # Can be Dancer2
+    ${^RM} = 'Dancer' if (exists $argh{dance}); # Can be Dancer2
 }
 
 use Dancer2; no warnings 'experimental';
@@ -39,8 +35,10 @@ use Plack::Builder;
 use Dancer2::Plugin::DBIC;
 
 use MyAPI;
+use if DEV, MyCMD => ();
 use MyModel;
 use MySchema;
+use MyStorageModel;
 use MyWWW;
 
 # Command-line options processing
@@ -57,56 +55,21 @@ if (delete $argh{recreate}) {
 
 # Load the test data set
 if (delete $argh{load}) {
-    my $csv = Text::CSV->new;
-    my $schema = schema;
-
     my $data_dir = "$root_dir/data";
-    opendir(my $DATADIR, $data_dir) or die ("Can't open the data dir [$data_dir] - [$!]");
-    while (my $item = readdir $DATADIR) {
-        next if $item !~ /\.csv\z/;
 
-        my $table = substr($item, 0, rindex($item, '.'));
-
-        open (my $CSV, '<:encoding(utf-8)', "$data_dir/$item") or die ("Can't open file[$data_dir/$item] - [$!]");
-        my $columns = $csv->getline($CSV);
-        my (@entry, @extra_processing);
-        foreach (@$columns) {
-            my $extras = [];
-            push (@$extras, \&MyModel::toInt)  if /id\z/i;
-            push (@$extras, \&MyModel::toDate) if /date/i;
-            push (@extra_processing, $extras);
-        }
-
-        while (my $row = $csv->getline($CSV)) {
-            my @fields;
-            while (my ($i, $cell) = each @$row) {
-                foreach ($extra_processing[$i]->@*) {
-                    $cell = $_->($cell);
-                }
-                push (@fields, $columns->[$i], $cell);
-            }
-
-            $schema->resultset($table)->create({ @fields });
-        }
-
-        close $CSV;
-    }
-    closedir $DATADIR;
+    MyStorageModel::LoadFromCSV($data_dir, schema);
 
     exit 0 unless (scalar keys %argh);
 }
 
 my $app = builder {
-    mount '/api' => MyAPI->to_app;
-    mount '/'    => MyWWW->to_app;
-
     # Some shortcuts to help with development
     if (DEV) {
-        #mount '/cmd'     => MyCMD->to_app; # TODO: move to a separate module
-        mount '/exit'    => sub { exit 0 };
-        mount '/showsql' => sub { return [200, [ 'Content-Type' => 'text/plain' ], [ MyUtil::DumpToPreformatted( \scalar schema()->deployment_statements ) ]] };
-        mount '/dumpenv' => sub ($env) { return [200, [ 'Content-Type' => 'text/plain' ], [ MyUtil::DumpToPreformatted($env) ]] };
+        mount '/cmd' => MyCMD->to_app;
     }
+
+    mount '/api' => MyAPI->to_app;
+    mount '/'    => MyWWW->to_app;
 };
 
 # Bare Dancer2 launch

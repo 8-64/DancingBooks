@@ -8,6 +8,7 @@ package MyWWW v0.0.1 {
     use Dancer2::Plugin::DBIC;
 
     use MyUtil;
+    use MyStorageModel;
 
     get 'index.html' => sub ($dancer) {
         template "templates/index.tx", { title => 'Book catalogue title page' };
@@ -34,12 +35,7 @@ package MyWWW v0.0.1 {
         my $book = $schema->resultset('Book')->search( {id => $id} )->first;
         send_error("Book with id [$id] not found!", 404) unless (defined $book);
 
-        %$result = $book->get_columns;
-        my @authors_rs = $book->search_related('book_authors');
-        my @author_ids;
-        push (@author_ids, $_->author_id) foreach @authors_rs;
-        my @authors = $schema->resultset('Author')->search( {id => [ @author_ids ]} )->all;
-        push ($result->{author}->@*, { $_->get_columns }) foreach @authors;
+        $result = MyStorageModel::GetBookInfo($book, $schema);
 
         template "templates/book.tx", { title => 'Book information', book => $result };
     };
@@ -69,13 +65,8 @@ package MyWWW v0.0.1 {
         my $author = $schema->resultset('Author')->search( {id => $id} )->first;
         send_error("Author with id [$id] not found!", 404) unless (defined $author);
 
-        %$result = $author->get_columns;
+        $result = MyStorageModel::GetAuthorInfo($author, $schema);
         $result->{country} = MyUtil::CountryToEmoji($result->{country});
-        my @books_rs = $author->search_related('book_authors');
-        my @book_ids;
-        push (@book_ids, $_->book_id) foreach @books_rs;
-        my @books = $schema->resultset('Book')->search( {id => [ @book_ids ]} )->all;
-        push ($result->{book}->@*, { $_->get_columns }) foreach @books;
 
         template "templates/author.tx", { title => 'Author information', author => $result };
     };

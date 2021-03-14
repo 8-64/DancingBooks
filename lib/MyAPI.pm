@@ -36,19 +36,12 @@ package MyAPI v0.0.2 {
 
     get '/books/:id' => sub ($dancer) {
         my $id = int route_parameters->get('id');
-
         my $schema = schema;
-        my $result = {};
 
         my $book = $schema->resultset('Book')->search( {id => $id} )->first;
         send_error("Book with id [$id] not found!", 404) unless (defined $book);
 
-        %$result = $book->get_columns;
-        my @authors_rs = $book->search_related('book_authors');
-        my @author_ids;
-        push (@author_ids, $_->author_id) foreach @authors_rs;
-        my @authors = $schema->resultset('Author')->search( {id => [ @author_ids ]} )->all;
-        push ($result->{author}->@*, { $_->get_columns }) foreach @authors;
+        my $result = MyStorageModel::GetBookInfo($book, $schema);
 
         return to_json( $result );
     };
@@ -71,7 +64,7 @@ package MyAPI v0.0.2 {
         my $post = from_json(request->body);
         $post->{id} = $id; # Prefer id from the request path
 
-        $post = MyModel::As('book', $post);
+        MyModel::As('book', $post);
 
         my $schema = schema;
 
@@ -83,7 +76,7 @@ package MyAPI v0.0.2 {
             my $authors_rs = $schema->resultset('Author');
             my $book_authors_rs = $schema->resultset('BookAuthors');
             foreach my $author (@$authors) {
-                $author = MyModel::As('author', $author);
+                MyModel::As('author', $author);
                 $authors_rs->find_or_create($author);
                 $book_authors_rs->create({
                     book_id   => $id,
@@ -134,19 +127,12 @@ package MyAPI v0.0.2 {
 
     get '/authors/:id' => sub ($dancer) {
         my $id = int route_parameters->get('id');
-
         my $schema = schema;
-        my $result = {};
 
         my $author = $schema->resultset('Author')->search( {id => $id} )->first;
         send_error("Author with id [$id] not found!", 404) unless (defined $author);
 
-        %$result = $author->get_columns;
-        my @books_rs = $author->search_related('book_authors');
-        my @book_ids;
-        push (@book_ids, $_->book_id) foreach @books_rs;
-        my @books = $schema->resultset('Book')->search( {id => [ @book_ids ]} )->all;
-        push ($result->{book}->@*, { $_->get_columns }) foreach @books;
+        my $result = MyStorageModel::GetAuthorInfo($author, $schema);
 
         return to_json( $result );
     };
@@ -168,7 +154,7 @@ package MyAPI v0.0.2 {
         my $id = int route_parameters->get('id');
         my $post = from_json(request->body);
         $post->{id} = $id; # Prefer id from the request path
-        $post = MyModel::As('author', $post);
+        MyModel::As('author', $post);
 
         my $schema = schema;
 
@@ -180,7 +166,7 @@ package MyAPI v0.0.2 {
             my $book_rs = $schema->resultset('Book');
             my $book_authors_rs = $schema->resultset('BookAuthors');
             foreach my $book (@$books) {
-                $book = MyModel::As('book', $book);
+                MyModel::As('book', $book);
                 $book_rs->find_or_create($book);
                 $book_authors_rs->create({
                     book_id   => $book->{id},
