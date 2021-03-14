@@ -1,5 +1,5 @@
 # Data storage abstraction module - storage/retrieval/modification of data
-package MyStorageModel v0.0.1 {
+package MyStorageModel v0.0.2 {
     use v5.23;
     use feature ':all';
     use warnings;
@@ -14,10 +14,10 @@ package MyStorageModel v0.0.1 {
     sub GetBookInfo ($book, $schema) {
         my $result = {};
         %$result = $book->get_columns;
-        my @authors_rs = $book->search_related('book_authors');
-        my @author_ids;
-        push (@author_ids, $_->author_id) foreach @authors_rs;
-        my @authors = $schema->resultset('Author')->search( {id => [ @author_ids ]} )->all;
+
+        my @authors = $schema->resultset('Author')->search(
+             { id => { -in => $book->search_related('book_authors')->get_column('author_id')->as_query } }
+        )->all;
         push ($result->{author}->@*, { $_->get_columns }) foreach @authors;
         $result;
     }
@@ -25,10 +25,10 @@ package MyStorageModel v0.0.1 {
     sub GetAuthorInfo ($author, $schema) {
         my $result = {};
         %$result = $author->get_columns;
-        my @books_rs = $author->search_related('book_authors');
-        my @book_ids;
-        push (@book_ids, $_->book_id) foreach @books_rs;
-        my @books = $schema->resultset('Book')->search( {id => [ @book_ids ]} )->all;
+
+        my @books = $schema->resultset('Book')->search(
+             { id => { -in => $author->search_related('book_authors')->get_column('book_id')->as_query } }
+        )->all;
         push ($result->{book}->@*, { $_->get_columns }) foreach @books;
         $result;
     }
