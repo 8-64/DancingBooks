@@ -7,7 +7,7 @@
 <tr>
     <td><: $author.country | mark_raw :></td>
     <td>
-    <a href="authors/<: $author.id :>"><h3><: $author.name :> <: $author.surname :> </h3></a>
+    <a href="../authors/<: $author.id :>"><h3><: $author.name :> <: $author.surname :> </h3></a>
     </td>
 </tr>
 : } # for

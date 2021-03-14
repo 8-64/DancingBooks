@@ -7,7 +7,7 @@
 <tr>
     <td>&nbsp;</td>
     <td>
-    <a href="books/<: $book.id :>"><h3><: $book.title :></h3></a>
+    <a href="../books/<: $book.id :>"><h3><: $book.title :></h3></a>
 :   if $book.isbn {
         <code>ISBN: <: $book.isbn :></code>
 :   }
