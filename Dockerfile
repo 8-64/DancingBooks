@@ -24,7 +24,7 @@ RUN ( perl -E "exit 1 if (qx[which perl] ne q[/usr/bin/perl])" \
 # Unbelievable! Issue with line endings does not want to stay in the previous millennium and is back!
     && perl -pi -E 's:[\012\015]{1,2}:$/:gn' $( find ./ -name '*.psgi' -o -name '*.t' -o -name '*.pl' ) \
     && cpanm App::cpm --notest \
-    && cpm install --global --show-build-log-on-failure Dancer2 Dancer2::Plugin::DBIC Dancer2::Template::Xslate Date::Manip Text::CSV Gazelle \
+    && cpm install --global --show-build-log-on-failure Dancer2 Dancer2::Plugin::DBIC Dancer2::Template::Xslate Date::Manip Text::CSV Gazelle B::Lint \
     && chmod a+x *.pl \
     && perl app.pl recreate --yes load
 

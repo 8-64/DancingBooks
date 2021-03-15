@@ -1,3 +1,0 @@
-- Documentation
-- Tests
-- Dockerfile/CI/CD
