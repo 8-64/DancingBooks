@@ -1,4 +1,4 @@
-package MyWWW v0.0.1 {
+package MyWWW v0.0.2 {
     use v5.23;
     use feature ':all';
     use warnings;
@@ -9,6 +9,8 @@ package MyWWW v0.0.1 {
 
     use MyUtil;
     use MyStorageModel;
+
+    use DescribeMyOpenAPI (app);
 
     get 'index.html' => sub ($dancer) {
         template "templates/index.tx", { title => 'Book catalogue title page' };

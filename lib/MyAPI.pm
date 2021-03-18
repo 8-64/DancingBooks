@@ -1,4 +1,4 @@
-package MyAPI v0.0.2 {
+package MyAPI v0.0.3 {
     use v5.23;
     use feature ':all';
     use warnings;
@@ -8,6 +8,8 @@ package MyAPI v0.0.2 {
     use Dancer2::Plugin::DBIC;
 
     use MyModel;
+
+    use DescribeMyOpenAPI (app);
 
     prefix '/api' if (${^RM} eq 'Dancer'); # it behaves differently in different run modes
     set content_type => 'application/json';

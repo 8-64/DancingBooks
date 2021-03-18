@@ -8,6 +8,7 @@ package MyCMD v0.0.1 {
     use Dancer2::Plugin::DBIC;
 
     use Data::Dumper 'Dumper';
+    $Data::Dumper::Sortkeys = 1;
 
     prefix '/cmd' if (${^RM} eq 'Dancer');
     set content_type => 'text/plain';

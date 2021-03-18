@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+package main v0.1.0;
 
 use v5.23;
 use feature ':all';
@@ -25,18 +26,26 @@ BEGIN {
     %argh = map { s/^-+//; lc $_, 1 } @ARGV;
     # Global run mode
     ${^RM} = 'Plack'; # Plack by default
-    ${^RM} = 'Test'   if (scalar caller(2)); # 0-th level of the stack trace is caused by BEGIN block, but if there is more, then application is run by something else from the outside
     ${^RM} = 'Dancer' if (exists $argh{dance}); # Can be Dancer2
+    if (scalar caller(2)) { # 0-th level of the stack trace is caused by BEGIN
+        ${^RM} = 'Test';    # Testing by default, but need to go deeper to see if it's run through plackup
+        for (my ($depth, @caller) = 3; @caller = caller($depth); $depth++) {
+            if ($caller[0] =~ /^Plack::/) {
+                ${^RM} = 'plackup';
+                last;
+            }
+        }
+    }
 }
 
 use Dancer2; no warnings 'experimental';
-
-use Plack::Builder;
 use Dancer2::Plugin::DBIC;
+use Plack::Builder;
 
 use MyAPI;
 use if DEV, MyCMD => ();
 use MyModel;
+use MyOpenAPI;
 use MySchema;
 use MyStorageModel;
 use MyWWW;
@@ -68,8 +77,9 @@ my $app = builder {
         mount '/cmd' => MyCMD->to_app;
     }
 
-    mount '/api' => MyAPI->to_app;
-    mount '/'    => MyWWW->to_app;
+    mount '/openAPI' => MyOpenAPI->to_app;
+    mount '/api'     => MyAPI->to_app;
+    mount '/'        => MyWWW->to_app;
 };
 
 # Bare Dancer2 launch
