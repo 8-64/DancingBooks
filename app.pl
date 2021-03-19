@@ -82,24 +82,43 @@ my $app = builder {
     mount '/'        => MyWWW->to_app;
 };
 
-# Bare Dancer2 launch
-if (${^RM} eq 'Dancer') { dance; exit 0 }
+given (${^RM}) {
+    # Bare Dancer2 launch
+    when ('Dancer') { dance }
+    when (/Plack/i) {
+        @ARGV = (
+            '--server'  => Settings::Server,
+            '--port'    => Settings::PORT,
+            '--workers' => Settings::Workers,
+            '-E'        => Settings::E,
+            @ARGV
+        );
 
-# Launch through Plack runner
-if (${^RM} eq 'Plack') {
-    @ARGV = (
-        '--server'  => Settings::Server,
-        '--port'    => Settings::PORT,
-        '--workers' => Settings::Workers,
-        '-E'        => Settings::E,
-        @ARGV
-    );
-
-    require Plack::Runner;
-    my $runner = Plack::Runner->new;
-    $runner->parse_options(@ARGV);
-    $runner->run($app);
-    exit 0;
+        continue;
+    }
+    # Launch through Plack runner
+    when ('Plack') {
+        require Plack::Runner;
+        my $runner = Plack::Runner->new;
+        $runner->parse_options(@ARGV);
+        $runner->run($app);
+    }
+    # Provide plackup with settings, but still allow for them to be overridden
+    when ('plackup') {
+        my $file = $0.'.restarting';
+        if (-e $file) {
+            unlink $file or die("Can't delete [$file] - [$!]");
+            return $app;
+        } else {
+            open (my $FLAG, '+>>', $file) or die ("Can't create [$file] - [$!]");
+            close $FLAG;
+            exec 'plackup', $0, @ARGV;
+            exit 1; # normally shouldn't reach this point
+        }
+    }
+    # Testing
+    when ('Test') { return $app }
+    default       { warn "Unknown runmode [$_]!"; dance }
 }
 
-return $app;
+__END__
