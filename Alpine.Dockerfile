@@ -20,7 +20,8 @@ RUN apk add perl perl-dev perl-utils perl-app-cpanminus perl-libwww \
     && apk add curl make bash \
     && apk add gcc libc-dev \
     && cpanm App::cpm --notest \
-    && cpm install --global --show-build-log-on-failure Dancer2 Dancer2::Plugin::DBIC Dancer2::Template::Xslate Date::Manip Text::CSV Gazelle B::Lint \
+    # see "cpanfile" for the full list of what will be installed
+    && cpm install --global --show-build-log-on-failure \
     && chmod a+x *.pl \
     # But the issue with line endings is ever-present :)
     && perl -pi -E 's:[\012\015]{1,2}:$/:gn' $( find ./ -name '*.psgi' -o -name '*.t' -o -name '*.pl' ) \

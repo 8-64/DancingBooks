@@ -1,0 +1,10 @@
+# Docker files
+Dockerfile
+.dockerignore
+*.Dockerfile
+
+# Git files
+**/.git*
+
+# Database will be recreated in-place
+db/*.db

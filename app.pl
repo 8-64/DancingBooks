@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-package main v0.1.0;
+package main v0.2.0;
 
 use v5.23;
 use feature ':all';
