@@ -10,8 +10,6 @@ package DescribeMyOpenAPI v0.0.1 {
     use JSON::MaybeXS;
     use YAML 'Dump';
 
-    use Data::Dumper 'Dumper';
-
     my $collection = {};
     my $openAPI = {
         openapi => '3.0.0',

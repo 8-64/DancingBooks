@@ -1,4 +1,4 @@
-package MyUtil v1.0.0 {
+package MyUtil v1.1.0 {
     use v5.23;
     use feature ':all';
     use warnings; no warnings 'experimental';
@@ -14,6 +14,16 @@ package MyUtil v1.0.0 {
         $second = ord($second) - $ascii_offset + $flag_offset;
 
         sprintf('&#x%0x;&#x%0x;', $first, $second); # HTML output
+    }
+
+    sub EditInPlace ($what, $with, @files) {
+        @files = grep { -r -f } @files;
+        local $^I   = '.bak'; # Classical backup extension. NOTE: It will pile up "*.bak.bak.bak.bak"'s with every run without cleanup 
+        local @ARGV = @files;
+        while (<>) {
+            s/$what/$with/gn;
+            print;
+        }
     }
 
     1;

@@ -17,7 +17,7 @@ BEGIN {
 use lib "$root_dir/lib";
 use MyENV (
     DANCER_CONFDIR => "$root_dir/conf",
-    DANCER_PORT    => Settings::PORT
+    DANCER_PORT    => Settings::port
 );
 
 # Command-line options
@@ -48,6 +48,7 @@ use MyModel;
 use MyOpenAPI;
 use MySchema;
 use MyStorageModel;
+use MyUtil;
 use MyWWW;
 
 # Command-line options processing
@@ -59,7 +60,7 @@ if (delete $argh{recreate}) {
 
     my $schema = schema;
     $schema->deploy( { add_drop_table => 1 } );
-    exit 0 unless (scalar keys %argh);
+    exit 0 unless (%argh);
 }
 
 # Load the test data set
@@ -68,7 +69,7 @@ if (delete $argh{load}) {
 
     MyStorageModel::LoadFromCSV($data_dir, schema);
 
-    exit 0 unless (scalar keys %argh);
+    exit 0 unless (%argh);
 }
 
 my $app = builder {
@@ -87,10 +88,17 @@ given (${^RM}) {
     when ('Dancer') { dance }
     when (/Plack/i) {
         @ARGV = (
-            '--server'  => Settings::Server,
-            '--port'    => Settings::PORT,
-            '--workers' => Settings::Workers,
+            '--server'  => Settings::server,
+            '--port'    => Settings::port,
+            '--workers' => Settings::workers,
             '-E'        => Settings::E,
+                ('--ssl'          => 1,
+                '--host'          =>  Settings::host,
+                '--ssl-key-file'  => "$root_dir/" . Settings::key_file,
+                '--ssl-cert-file' => "$root_dir/" . Settings::cert_file,
+                '--ssl-key'       => "$root_dir/" . Settings::key_file,
+                '--ssl-cert'      => "$root_dir/" . Settings::cert_file,
+                ) x Settings::use_ssl,
             @ARGV
         );
 

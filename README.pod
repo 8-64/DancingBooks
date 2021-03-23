@@ -8,7 +8,7 @@ Sample book catalogue service written using L<Dancer2>, L<DBIx::Class>, and L<Pl
 
 =head1 VERSION
 
-v0.0.1
+v0.2.0
 
 =head1 SYNOPSIS
 
